@@ -1,0 +1,97 @@
+# This workflow will trigger Datadog Synthetic tests within your Datadog organisation
+# For more information on running Synthetic tests within your GitHub workflows see: https://docs.datadoghq.com/synthetics/cicd_integrations/github_actions/
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# To get started:
+
+# 1. Add your Datadog API (DD_API_KEY) and Application Key (DD_APP_KEY) as secrets to your GitHub repository. For more information, see: https://docs.datadoghq.com/account_management/api-app-keys/.
+# 2. Start using the action within your workflow
+
+name: Run Datadog Synthetic tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Run Synthetic tests within your GitHub workflow.
+    # For additional configuration options visit the action within the marketplace: https://github.com/marketplace/actions/datadog-synthetics-ci
+    - name: Run Datadog Synthetic tests
+      uses: DataDog/synthetics-ci-github-action@87b505388a22005bb8013481e3f73a367b9a53eb # v1.4.0
+      with:
+        api_key: ${{secrets.DD_API_KEY}}
+        app_key: ${{secrets.DD_APP_KEY}}
+        test_search_query: 'tag:e2e-tests' #Modify this tag to suit your tagging strategy
+
+
+
+
+            - name: Azure MYSQL Deploy
+            
+  uses: Azure/mysql@v1
+  with:
+    # Server name of Azure DB for Mysql. Example: fabrikam.mysql.database.azure.com. When you connect using Mysql Workbench, this is the same value that is used for Hostname in Parameters
+    server-name: 
+    # The connection string, including authentication information, for the Azure MySQL Server. (deprecated)
+    connection-string: # optional
+    # Azure MySQL Server username for login
+    username: # optional
+    # Azure MySQL Server password for login
+    password: # optional
+    # Azure MySQL Server database (optional) to connect to. No database will be used automatically.
+    database: # optional
+    # Path to SQL script file to deploy
+    sql-file: 
+    # Additional options supported by mysql simple SQL shell. These options will be applied when executing the given file on the Azure DB for Mysql.
+    arguments: # optional
+
+    # .github/workflows/mysql-deploy.yml
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: azure/mysql@v1
+      with:
+        server-name: REPLACE_THIS_WITH_YOUR_MYSQL_SERVER_NAME
+        connection-string: ${{ secrets.AZURE_MYSQL_CONNECTION_STRING }}
+        sql-file: './sqlFile.sql'
+
+
+        # .github/workflows/mysql-deploy.yml
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: azure/mysql@v1
+      with:
+        server-name: REPLACE_THIS_WITH_YOUR_MYSQL_SERVER_NAME
+        username: admin@REPLACE_THIS_WITH_YOUR_MYSQL_SERVER_NAME
+        password: ${{ secrets.AZURE_MYSQL_PASSWORD }}
+        # This is optional, you want to connect directly
+        database: REPLACE_WITH_DATABASE_NAME
+        sql-file: './sqlFile.sql'
+          
